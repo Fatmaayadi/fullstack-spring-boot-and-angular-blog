@@ -74,7 +74,7 @@ pipeline {
                     ], 
                     credentialsId: 'Sonarqube-token',
                     groupId: 'com.github.braians',
-                    nexusUrl: 'http://192.168.74.134:8081',
+                    nexusUrl: '192.168.74.134:8081',
                     nexusVersion: 'nexus3',
                     protocol: 'http',
                     repository: 'Mavenupload',
