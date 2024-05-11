@@ -69,7 +69,7 @@ pipeline {
         stage('Deploy Artifacts to Nexus') {
             steps {
                 script {
-                    pom = readMavenPom file: "pom.xml";
+                    pom = readMavenPom file: "spring-blog-backend/pom.xml";
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     artifactPath = filesByGlob[0].path;
