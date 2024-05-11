@@ -16,6 +16,7 @@ pipeline {
         NEXUS_URL = "192.168.74.134:8081"
         NEXUS_REPOSITORY = "Mavenupload"
         NEXUS_CREDENTIAL_ID = "nexusCredential"
+        ARTIFACT_VERSION = "0.0.1-SNAPSHOT"
     }
     
     stages {
