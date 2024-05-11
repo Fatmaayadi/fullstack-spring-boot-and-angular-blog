@@ -62,37 +62,29 @@ pipeline {
         }
         
         stage('Deploy Artifacts to Nexus') {
-            steps {
-                script {
-                    pom = readMavenPom file: "spring-blog-backend/pom.xml"
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+            steps{
+                script{
+                    pom = readMavenPom file: "spring-blog-backend/pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
 
-                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    artifactPath = filesByGlob[0].path
-                    artifactExists = fileExists artifactPath
-                    
-                    if (artifactExists) {
-                        echo "* File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}, artifactID ${pom.artifactId}, target/${pom.artifactId}.${pom.packaging}"
-                        
-                        nexusArtifactUploader(
-                            artifacts: [
-                                [
-                                    artifactId: "${pom.artifactId}",
-                                    classifier: '',
-                                    file: "${artifactPath}",
-                                    type: "${pom.packaging}"
-                                ]
-                            ],
-                            credentialsId: 'nexusCredential',
-                            groupId: "${pom.groupId}",
-                            nexusUrl: '192.168.74.134:8081',
-                            nexusVersion: 'nexus3',
-                            protocol: 'http',
-                            repository: 'Mavenupload',
-                            version: "${pom.version}"
-                        )
+                    if(filesByGlob.isEmpty()) {
+                        error "No files found for deployment"
                     } else {
-                        error "* File: ${artifactPath}, could not be found"
+                        artifactPath = filesByGlob[0].path;
+                        echo "* File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}, artifactID ${pom.artifactId}, target/${pom.artifactId}.${pom.packaging}";
+                        nexusArtifactUploader artifacts: [
+                            [artifactId: "${pom.artifactId}",
+                            classifier: '',
+                            file: "${artifactPath}",
+                            type: "${pom.packaging}"]
+                        ],
+                        credentialsId: 'nexusCredential',
+                        groupId: "${pom.groupId}",
+                        nexusUrl: '192.168.74.134:8081',
+                        nexusVersion: 'nexus3',
+                        protocol: 'http',
+                        repository: 'Mavenupload',
+                        version: "${pom.version}"
                     }
                 }
             }
