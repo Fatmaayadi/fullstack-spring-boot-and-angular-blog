@@ -72,7 +72,7 @@ pipeline {
                             type: 'jar'
                         ]
                     ], 
-                    credentialsId: 'Sonarqube-token',
+                    credentialsId: 'nexusCredential',
                     groupId: 'com.github.braians',
                     nexusUrl: '192.168.74.134:8081',
                     nexusVersion: 'nexus3',
