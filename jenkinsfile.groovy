@@ -47,20 +47,16 @@ pipeline {
             }
         }
         
-        stage('Code Analysis') {
+         stage('Code Analysis') {
             steps {
                 script {
-                    withCredentials([string(credentialsId: 'Sonarqube-token', variable: 'SONAR_LOGIN')]) {
-                        withSonarQubeEnv('SonarQubeServer') {
                             sh """
                                 ${scannerHome}/bin/sonar-scanner \
-                                -Dsonar.projectKey=tunartisan \
+                                -Dsonar.projectKey=Test \
                                 -Dsonar.java.binaries=. \
                                 -Dsonar.host.url=http://192.168.74.139:9010 \
                                 -Dsonar.login=squ_1ca99673dccd74a3038f8b7c456368bba9b4d85b
                             """
-                        }
-                    }
                 }
             }
         }
