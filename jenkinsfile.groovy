@@ -16,6 +16,8 @@ pipeline {
         NEXUS_URL = "192.168.74.134:8081"
         NEXUS_REPOSITORY = "Mavenupload"
         NEXUS_CREDENTIAL_ID = "nexusCredential"
+        // Define the artifact version
+        ARTIFACT_VERSION = readMavenPom().version
     }
     
     stages {
@@ -71,23 +73,22 @@ pipeline {
                 script {
                     pom = readMavenPom file: "spring-blog-backend/pom.xml";
                     filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
-
-                    // Check if filesByGlob array is empty
+                    
                     if (filesByGlob.isEmpty()) {
                         error "No files found matching the glob pattern"
                     } else {
-                        // Access the first element only if the array is not empty
                         artifactPath = filesByGlob[0].path;
                         artifactExists = fileExists artifactPath;
 
-                        if(artifactExists) {
+                        if (artifactExists) {
                             echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
                                 protocol: NEXUS_PROTOCOL,
                                 nexusUrl: NEXUS_URL,
                                 groupId: pom.groupId,
-                                version: ARTIFACT_VERSION,
+                                version: ARTIFACT_VERSION, // Using the defined artifact version
                                 repository: NEXUS_REPOSITORY,
                                 credentialsId: NEXUS_CREDENTIAL_ID,
                                 artifacts: [
