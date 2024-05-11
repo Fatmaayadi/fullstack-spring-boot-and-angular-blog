@@ -10,7 +10,7 @@ pipeline {
     }
     
     environment {
-        scannerHome = tool 'Java'
+        scannerHome = tool 'SonarQubeServer'
     }
     
     stages {
