@@ -16,7 +16,7 @@ pipeline {
         NEXUS_URL = "192.168.74.134:8081"
         NEXUS_REPOSITORY = "Mavenupload"
         NEXUS_CREDENTIAL_ID = "nexusCredential"
-        ARTIFACT_VERSION = "0.0.1-SNAPSHOT"
+        ARTIFACT_VERSION = "0.0.1-SNAPSHOT" // Set the artifact version
     }
     
     stages {
@@ -70,19 +70,22 @@ pipeline {
         stage('Deploy Artifacts to Nexus') {
             steps {
                 script {
-                    def pom = readMavenPom file: "spring-blog-backend/pom.xml"
-                    def filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                    // Read POM xml file using 'readMavenPom' step
+                    pom = readMavenPom file: "spring-blog-backend/pom.xml"
+                    // Find built artifact under target folder
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
+                    // Print some info from the artifact found
+                    echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
                     
-                    if (filesByGlob.isEmpty()) {
-                        error "No files found matching the glob pattern"
-                    } else {
-                        def artifactPath = filesByGlob[0].path
-                        def artifactExists = fileExists artifactPath
+                    // Check if filesByGlob array is empty
+                    if (filesByGlob) {
+                        // Extract the path from the File found
+                        artifactPath = filesByGlob[0].path;
+                        // Assign to a boolean response verifying If the artifact name exists
+                        artifactExists = fileExists artifactPath;
 
-                        if (artifactExists) {
-                            // Assign the value of ARTIFACT_VERSION here
-                            def ARTIFACT_VERSION = pom.version
-                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${ARTIFACT_VERSION}"
+                        if(artifactExists) {
+                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
 
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
@@ -93,15 +96,19 @@ pipeline {
                                 repository: NEXUS_REPOSITORY,
                                 credentialsId: NEXUS_CREDENTIAL_ID,
                                 artifacts: [
+                                    // Artifact generated such as .jar, .ear and .war files.
                                     [artifactId: pom.artifactId,
-                                     classifier: '',
-                                     file: artifactPath,
-                                     type: pom.packaging]
+                                    classifier: '',
+                                    file: artifactPath,
+                                    type: pom.packaging]
                                 ]
-                            )
+                            );
+
                         } else {
-                            error "*** File: ${artifactPath}, could not be found"
+                            error "*** File: ${artifactPath}, could not be found";
                         }
+                    } else {
+                        error "No files found matching the glob pattern"
                     }
                 }
             }
