@@ -11,12 +11,6 @@ pipeline {
     
     environment {
         scannerHome = tool 'SonarQubeServer'
-        NEXUS_VERSION = "nexus3"
-        NEXUS_PROTOCOL = "http"
-        NEXUS_URL = "192.168.74.134:8081"
-        NEXUS_REPOSITORY = "Mavenupload"
-        NEXUS_CREDENTIAL_ID = "nexusCredential"
-        ARTIFACT_VERSION = "0.0.1-SNAPSHOT" // Set the artifact version
     }
     
     stages {
@@ -68,50 +62,32 @@ pipeline {
         }
         
         stage('Deploy Artifacts to Nexus') {
-            steps {
-                script {
-                    // Read POM xml file using 'readMavenPom' step
-                    pom = readMavenPom file: "spring-blog-backend/pom.xml"
-                    // Find built artifact under target folder
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
-                    // Print some info from the artifact found
+            steps{
+                script{
+                    pom = readMavenPom file: "spring-blog-backend/pom.xml";
+                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+
                     echo "${filesByGlob[0].name} ${filesByGlob[0].path} ${filesByGlob[0].directory} ${filesByGlob[0].length} ${filesByGlob[0].lastModified}"
-                    
-                    // Check if filesByGlob array is empty
-                    if (filesByGlob) {
-                        // Extract the path from the File found
-                        artifactPath = filesByGlob[0].path;
-                        // Assign to a boolean response verifying If the artifact name exists
-                        artifactExists = fileExists artifactPath;
-
-                        if(artifactExists) {
-                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
-
-                            nexusArtifactUploader(
-                                nexusVersion: NEXUS_VERSION,
-                                protocol: NEXUS_PROTOCOL,
-                                nexusUrl: NEXUS_URL,
-                                groupId: pom.groupId,
-                                version: ARTIFACT_VERSION,
-                                repository: NEXUS_REPOSITORY,
-                                credentialsId: NEXUS_CREDENTIAL_ID,
-                                artifacts: [
-                                    // Artifact generated such as .jar, .ear and .war files.
-                                    [artifactId: pom.artifactId,
-                                    classifier: '',
-                                    file: artifactPath,
-                                    type: pom.packaging]
-                                ]
-                            );
-
-                        } else {
-                            error "*** File: ${artifactPath}, could not be found";
-                        }
+                    artifactPath = filesByGlob[0].path;
+                    artifactExists = fileExists artifactPath;
+                    if(artifactExists) {
+                        echo "* File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}, artifactID ${pom.artifactId}, target/${pom.artifactId}.${pom.packaging}";
+                        nexusArtifactUploader artifacts: 
+                    [[artifactId: "${pom.artifactId}",
+                    classifier: '',
+                    file: "${artifactPath}",
+                    type: "${pom.packaging}"]],
+                    credentialsId: 'nexusCredential',
+                    groupId: "${pom.groupId}",
+                    nexusUrl: '192.168.74.134:8081',
+                    nexusVersion: 'nexus3',
+                    protocol: 'http',
+                    repository: 'Mavenupload',
+                    version: "${pom.version}"
                     } else {
-                        error "No files found matching the glob pattern"
+                        error "* File: ${artifactPath}, could not be found";
                     }
                 }
             }
-        }
     }
 }
