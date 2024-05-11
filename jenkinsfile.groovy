@@ -16,8 +16,6 @@ pipeline {
         NEXUS_URL = "192.168.74.134:8081"
         NEXUS_REPOSITORY = "Mavenupload"
         NEXUS_CREDENTIAL_ID = "nexusCredential"
-        // Define the artifact version
-        ARTIFACT_VERSION = readMavenPom().version
     }
     
     stages {
@@ -71,24 +69,26 @@ pipeline {
         stage('Deploy Artifacts to Nexus') {
             steps {
                 script {
-                    pom = readMavenPom file: "spring-blog-backend/pom.xml";
-                    filesByGlob = findFiles(glob: "target/*.${pom.packaging}");
+                    def pom = readMavenPom file: "spring-blog-backend/pom.xml"
+                    def filesByGlob = findFiles(glob: "target/*.${pom.packaging}")
                     
                     if (filesByGlob.isEmpty()) {
                         error "No files found matching the glob pattern"
                     } else {
-                        artifactPath = filesByGlob[0].path;
-                        artifactExists = fileExists artifactPath;
+                        def artifactPath = filesByGlob[0].path
+                        def artifactExists = fileExists artifactPath
 
                         if (artifactExists) {
-                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${pom.version}";
+                            // Assign the value of ARTIFACT_VERSION here
+                            def ARTIFACT_VERSION = pom.version
+                            echo "*** File: ${artifactPath}, group: ${pom.groupId}, packaging: ${pom.packaging}, version ${ARTIFACT_VERSION}"
 
                             nexusArtifactUploader(
                                 nexusVersion: NEXUS_VERSION,
                                 protocol: NEXUS_PROTOCOL,
                                 nexusUrl: NEXUS_URL,
                                 groupId: pom.groupId,
-                                version: ARTIFACT_VERSION, // Using the defined artifact version
+                                version: ARTIFACT_VERSION,
                                 repository: NEXUS_REPOSITORY,
                                 credentialsId: NEXUS_CREDENTIAL_ID,
                                 artifacts: [
@@ -97,9 +97,9 @@ pipeline {
                                      file: artifactPath,
                                      type: pom.packaging]
                                 ]
-                            );
+                            )
                         } else {
-                            error "*** File: ${artifactPath}, could not be found";
+                            error "*** File: ${artifactPath}, could not be found"
                         }
                     }
                 }
