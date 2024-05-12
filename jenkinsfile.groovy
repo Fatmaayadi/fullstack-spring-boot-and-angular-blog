@@ -82,21 +82,7 @@ pipeline {
                         repository: 'Mavenupload',
                         version: '0.0.1'
                     )
-                }
-                
-                dir('spring-blog-client') {
-                    script {
-                        def NEXUS_URL = '192.168.74.134:8081'
-                        def NEXUS_REPO = 'npm-public'
-                        def NEXUS_CREDENTIALS_ID = 'npmCred'            
-                        // Configure npm to use the Nexus registry
-                        sh "npm config set registry http://192.168.74.134:8081/repository/npm-public/"
-                        // Log in to npm
-                        sh "npm login --registry=http://192.168.74.134:8081/repository/npm-public/"
-                        // Publish frontend artifacts using npm publish
-                        sh "npm publish"
-                    }
-                }
+                }     
             }
         }
     }
