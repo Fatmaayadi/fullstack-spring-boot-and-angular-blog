@@ -89,7 +89,7 @@ pipeline {
                         def NEXUS_REPO = 'npm-public'
                         def NEXUS_CREDENTIALS_ID = 'npmCred'            
                         // Configure npm to use the Nexus registry
-                        sh "npm config set registry ${NEXUS_URL}/repository/${NEXUS_REPO}/"
+                        sh "npm config set registry http://192.168.74.134:8081/repository/npm-public/"
                         // Publish frontend artifacts using npm publish
                         sh "npm publish"
                     }
