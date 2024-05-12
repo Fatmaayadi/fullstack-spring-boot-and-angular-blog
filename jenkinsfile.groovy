@@ -83,16 +83,6 @@ pipeline {
                         version: '0.0.1'
                     )
                 }
-                dir('spring-blog-client') {
-                    script {
-                        // Configure npm to use the Nexus registry
-                        sh "npm config set registry http://192.168.74.134:8081/repository/npm-public/"
-                        // Use nexusCredential for npm authentication
-                        sh "npm login --registry=http://192.168.74.134:8081/repository/npm-public/ --scope=@braians --auth-type=Basic"
-                        // Publish frontend artifacts using npm publish
-                        sh "npm publish"
-                    }
-                }
             }
         }
     }
