@@ -14,6 +14,16 @@ pipeline {
     }
     
     stages {
+        stage('Login to Nexus') {
+            steps {
+                // Add your login step here
+                // For example, using Nexus credentials
+                withCredentials([usernamePassword(credentialsId: 'nexusCredential', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
+                    sh "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} http://192.168.74.134:8081"
+                }
+            }
+        }
+        
         stage('Run Backend Unit Tests') {
             steps {
                 dir('spring-blog-backend') {
@@ -47,7 +57,7 @@ pipeline {
             }
         }
         
-        stage(' SonarQube Code Analysis') {
+        stage('SonarQube Code Analysis') {
             steps {
                 script {
                     sh """
@@ -61,7 +71,7 @@ pipeline {
             }
         }
         
-        stage('Deploying artifacts to  Nexus') {
+        stage('Deploying artifacts to Nexus') {
             steps {
                 dir('spring-blog-backend') {
                     // Deploy backend artifact
