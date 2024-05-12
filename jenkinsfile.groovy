@@ -92,7 +92,7 @@ pipeline {
                         // Configure npm to use the Nexus registry
                         sh "npm config set registry http://192.168.74.134:8081/repository/npm-public/"
                         // Log in to npm
-                        sh "npm login --registry=http://192.168.74.134:8081/repository/npm-public/ --scope=@braians"
+                        sh "npm login --registry=http://192.168.74.134:8081/repository/npm-public/"
                         // Publish frontend artifacts using npm publish
                         sh "npm publish"
                     }
