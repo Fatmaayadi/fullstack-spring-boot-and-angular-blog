@@ -4,7 +4,7 @@ pipeline {
     tools {
         nodejs 'NodeJS'
         jdk 'Java'
-        docker 'docker' 
+        dockerTool 'docker'
     } 
     
     environment {
