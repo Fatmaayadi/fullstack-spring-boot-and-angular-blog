@@ -34,7 +34,7 @@ pipeline {
             }
         }
         
-        stage('Code Analysis') {
+        stage('SonarQube Code Analysis') {
             steps {
                 script {
                     sh """
@@ -48,7 +48,7 @@ pipeline {
             }
         }
         
-        stage('Deploy Nexus') {
+        stage('Deploying artifacts to Nexus') {
             steps {
                 dir('spring-blog-backend') {
                     // Deploy backend artifact
@@ -71,13 +71,15 @@ pipeline {
                     )
                 }
                 dir('spring-blog-client') {
-                    def NEXUS_URL = '192.168.74.134:8081'
-                    def NEXUS_REPO = 'npm-public'
-                    def NEXUS_CREDENTIALS_ID = 'npmCred'            
-                    // Configure npm to use the Nexus registry
-                    sh "npm config set registry ${NEXUS_URL}/repository/${NEXUS_REPO}/"
-                    // Publish frontend artifacts using npm publish
-                    sh "npm publish"
+                    script {
+                        def NEXUS_URL = '192.168.74.134:8081'
+                        def NEXUS_REPO = 'npm-public'
+                        def NEXUS_CREDENTIALS_ID = 'npmCred'            
+                        // Configure npm to use the Nexus registry
+                        sh "npm config set registry ${NEXUS_URL}/repository/${NEXUS_REPO}/"
+                        // Publish frontend artifacts using npm publish
+                        sh "npm publish"
+                    }
                 }
             }
         }
