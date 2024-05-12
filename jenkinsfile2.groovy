@@ -4,6 +4,7 @@ pipeline {
     tools {
         nodejs 'NodeJS'
         jdk 'Java'
+        docker 'docker' // Add Docker tool
     } 
     
     environment {
@@ -18,7 +19,7 @@ pipeline {
                 }
             }
         }
-         stage('Build Frontend') {
+        stage('Build Frontend') {
             steps {
                 dir('spring-blog-client') {
                     sh 'npm install --legacy-peer-deps'
@@ -29,18 +30,16 @@ pipeline {
         stage('SonarQube Code Analysis') {
             steps {
                 script {
-                        sh """
-                            ${scannerHome}/bin/sonar-scanner \
-                            -Dsonar.projectKey=Test \
-                            -Dsonar.java.binaries=. \
-                            -Dsonar.host.url=http://192.168.74.139:9010 \
-                            -Dsonar.login=squ_1ca99673dccd74a3038f8b7c456368bba9b4d85b
-                        """
-                    }
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=Test \
+                        -Dsonar.java.binaries=. \
+                        -Dsonar.host.url=http://192.168.74.139:9010 \
+                        -Dsonar.login=squ_1ca99673dccd74a3038f8b7c456368bba9b4d85b
+                    """
                 }
             }
-        
-        
+        }
         stage('Build Docker Image') {
             steps {
                 script {
@@ -50,16 +49,14 @@ pipeline {
                 }
             }
         }
-        
         stage('Push to Docker Hub') {
             steps {
                 script {
-                        sh 'docker login -u $fatma24 -p $rootroot24'
-                        sh 'docker push fatma24/frontend:latest'
-                    }
+                    sh 'docker login -u $fatma24 -p $rootroot24'
+                    sh 'docker push fatma24/frontend:latest'
                 }
             }
-        
+        }
         stage('Create Container') {
             steps {
                 script {
