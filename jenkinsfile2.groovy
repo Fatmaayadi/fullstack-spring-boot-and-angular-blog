@@ -29,9 +29,6 @@ pipeline {
         stage('SonarQube Code Analysis') {
             steps {
                 script {
-                    dir('spring-blog-client') {
-                        sh 'npm install --legacy-peer-deps'
-                        sh 'npm run build -- --configuration=production'
                         sh """
                             ${scannerHome}/bin/sonar-scanner \
                             -Dsonar.projectKey=Test \
@@ -42,7 +39,7 @@ pipeline {
                     }
                 }
             }
-        }
+        
         
         stage('Build Docker Image') {
             steps {
