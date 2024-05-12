@@ -45,7 +45,7 @@ pipeline {
             steps {
                 script {
                     dir('spring-blog-client') {
-                        bat 'docker build -t fatma24/frontend:latest .'
+                        sh 'docker build -t fatma24/frontend:latest .'
                     }
                 }
             }
@@ -54,8 +54,8 @@ pipeline {
         stage('Push to Docker Hub') {
             steps {
                 script {
-                        bat 'docker login -u $fatma24 -p $rootroot24'
-                        bat 'docker push fatma24/frontend:latest'
+                        sh 'docker login -u $fatma24 -p $rootroot24'
+                        sh 'docker push fatma24/frontend:latest'
                     }
                 }
             }
@@ -63,7 +63,7 @@ pipeline {
         stage('Create Container') {
             steps {
                 script {
-                    bat 'docker run -d --name frontend fatma24/frontend:latest'
+                    sh 'docker run -d --name frontend fatma24/frontend:latest'
                 }
             }
         }
