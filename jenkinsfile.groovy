@@ -22,24 +22,11 @@ pipeline {
             }
         }
 
-        stage('Build Backend') {
+        stage('Build Backend & Frontend') {
             steps {
                 dir('spring-blog-backend') {
                     sh 'mvn clean install'
                 }
-            }
-        }
-        
-        stage('Run Frontend Unit Tests') {
-            steps {
-                dir('spring-blog-client') {
-                    // sh 'npm run test'
-                }
-            }
-        }
-
-        stage('Build Frontend') {
-            steps {
                 dir('spring-blog-client') {
                     sh 'npm install'
                     sh 'npm run build -- --configuration=production'
@@ -64,6 +51,7 @@ pipeline {
         stage('Deploy Nexus') {
             steps {
                 dir('spring-blog-backend') {
+                    // Deploy backend artifact
                     nexusArtifactUploader(
                         artifacts: [
                             [
@@ -81,6 +69,15 @@ pipeline {
                         repository: 'Mavenupload',
                         version: '0.0.1'
                     )
+                }
+                dir('spring-blog-client') {
+                    def NEXUS_URL = '192.168.74.134:8081'
+                    def NEXUS_REPO = 'npm-public'
+                    def NEXUS_CREDENTIALS_ID = 'npmCred'            
+                    // Configure npm to use the Nexus registry
+                    sh "npm config set registry ${NEXUS_URL}/repository/${NEXUS_REPO}/"
+                    // Publish frontend artifacts using npm publish
+                    sh "npm publish"
                 }
             }
         }
