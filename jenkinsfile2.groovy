@@ -4,11 +4,11 @@ pipeline {
     tools {
         nodejs 'NodeJS'
         jdk 'Java'
-        dockerTool 'docker'
     } 
     
     environment {
         scannerHome = tool 'SonarQubeServer'
+        dockerHome = tool 'docker'
     }
     
     stages {
