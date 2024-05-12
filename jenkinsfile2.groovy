@@ -8,7 +8,6 @@ pipeline {
     
     environment {
         scannerHome = tool 'SonarQubeServer'
-        dockerHome = tool 'docker'
     }
     
     stages {
@@ -51,9 +50,11 @@ pipeline {
         }
         stage('Push to Docker Hub') {
             steps {
-                script {
-                    sh 'docker login -u $fatma24 -p $rootroot24'
-                    sh 'docker push fatma24/frontend:latest'
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                    script {
+                        sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
+                        sh "docker push fatma24/frontend:latest"
+                    }
                 }
             }
         }
