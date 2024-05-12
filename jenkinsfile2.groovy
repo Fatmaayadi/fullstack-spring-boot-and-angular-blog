@@ -11,6 +11,21 @@ pipeline {
     }
     
     stages {
+        stage('Run Frontend Unit Tests') {
+            steps {
+                dir('spring-blog-client') {
+                    // sh 'npm run test'
+                }
+            }
+        }
+         stage('Build Frontend') {
+            steps {
+                dir('spring-blog-client') {
+                    sh 'npm install --legacy-peer-deps'
+                    sh 'npm run build -- --configuration=production'
+                }
+            }
+        }
         stage('SonarQube Code Analysis') {
             steps {
                 script {
