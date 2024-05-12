@@ -22,11 +22,24 @@ pipeline {
             }
         }
 
-        stage('Build Backend & Frontend') {
+        stage('Run Frontend Unit Tests') {
+            steps {
+                dir('spring-blog-client') {
+                    // sh 'npm run test'
+                }
+            }
+        }
+        
+        stage('Build Backend') {
             steps {
                 dir('spring-blog-backend') {
                     sh 'mvn clean install'
                 }
+            }
+        }
+        
+        stage('Build Frontend') {
+            steps {
                 dir('spring-blog-client') {
                     sh 'npm install'
                     sh 'npm run build -- --configuration=production'
@@ -34,7 +47,7 @@ pipeline {
             }
         }
         
-        stage('SonarQube Code Analysis') {
+        stage(' SonarQube Code Analysis') {
             steps {
                 script {
                     sh """
@@ -48,7 +61,7 @@ pipeline {
             }
         }
         
-        stage('Deploying artifacts to Nexus') {
+        stage('Deploying artifacts to  Nexus') {
             steps {
                 dir('spring-blog-backend') {
                     // Deploy backend artifact
