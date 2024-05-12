@@ -14,16 +14,6 @@ pipeline {
     }
     
     stages {
-        stage('Login to Nexus') {
-            steps {
-                // Add your login step here
-                // For example, using Nexus credentials
-                withCredentials([usernamePassword(credentialsId: 'nexusCredential', usernameVariable: 'NEXUS_USERNAME', passwordVariable: 'NEXUS_PASSWORD')]) {
-                    sh "curl -u ${NEXUS_USERNAME}:${NEXUS_PASSWORD} http://192.168.74.134:8081"
-                }
-            }
-        }
-        
         stage('Run Backend Unit Tests') {
             steps {
                 dir('spring-blog-backend') {
@@ -93,6 +83,7 @@ pipeline {
                         version: '0.0.1'
                     )
                 }
+                
                 dir('spring-blog-client') {
                     script {
                         def NEXUS_URL = '192.168.74.134:8081'
@@ -100,6 +91,8 @@ pipeline {
                         def NEXUS_CREDENTIALS_ID = 'npmCred'            
                         // Configure npm to use the Nexus registry
                         sh "npm config set registry http://192.168.74.134:8081/repository/npm-public/"
+                        // Log in to npm
+                        sh "npm login --registry=http://192.168.74.134:8081/repository/npm-public/ --scope=@braians"
                         // Publish frontend artifacts using npm publish
                         sh "npm publish"
                     }
