@@ -63,7 +63,7 @@ pipeline {
         stage('Create Container') {
             steps {
                 script {
-                    sh 'docker run -d --name frontend fatma24/frontend:latest'
+                    sh 'docker run -d --name front fatma24/frontend:latest'
                 }
             }
         }
