@@ -23,6 +23,7 @@ pipeline {
         stage('Build Frontend') {
             steps {
                 dir('spring-blog-client') {
+                    sh 'npm config set registry https://registry.npmjs.org/'
                     sh 'npm install --legacy-peer-deps'
                 }
             }
