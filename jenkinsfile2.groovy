@@ -4,12 +4,11 @@ pipeline {
     tools {
         nodejs 'NodeJS'
         jdk 'Java'
-        dockerTool 'docker' // Corrected tool declaration for Docker
+        dockerTool 'docker' 
     } 
     
     environment {
         scannerHome = tool 'SonarQubeServer'
-        dockerBinary = '/snap/bin/docker' // Full path to the Docker binary
     }
     
     stages {
@@ -45,7 +44,7 @@ pipeline {
             steps {
                 script {
                     dir('spring-blog-client') {
-                        sh '${dockerBinary} build -t fatma24/frontend:latest .'
+                        sh 'docker build -t fatma24/frontend:latest .'
                     }
                 }
             }
