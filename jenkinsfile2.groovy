@@ -35,7 +35,7 @@ pipeline {
                         -Dsonar.projectKey=Test \
                         -Dsonar.java.binaries=. \
                         -Dsonar.host.url=http://192.168.74.139:9010 \
-                        -Dsonar.login=squ_1ca99673dccd74a3038f8b7c456368bba9b4d85b
+                        -Dsonar.login=squ_fe54d823cffc1f983186143238d3c607ff2a017b
                     """
                 }
             }
