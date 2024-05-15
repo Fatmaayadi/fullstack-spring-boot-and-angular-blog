@@ -45,6 +45,6 @@ services:
     restart: always
     depends_on:
       - backend-server
-networks:
-  custom_network:
-    driver: bridge
+#networks:
+ # custom_network:
+  #  driver: bridge
