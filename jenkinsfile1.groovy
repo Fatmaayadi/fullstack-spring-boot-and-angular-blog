@@ -54,7 +54,7 @@ pipeline {
                                 type: 'jar'
                             ]
                         ], 
-                        credentialsId: 'nexus-credential',
+                        credentialsId: 'nexus-credentials',
                         groupId: 'com.github.braians',
                         nexusUrl: '192.168.74.134:8081',
                         nexusVersion: 'nexus3',
