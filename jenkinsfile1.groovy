@@ -65,5 +65,31 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    dir('spring-blog-backend') {
+                        sh 'docker build -t backend:latest .'
+                    }
+                }
+            }
+        }
+        stage('Push to Docker Hub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
+                    script {
+                        sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
+                        sh "docker push backend:latest"
+                    }
+                }
+            }
+        }
+        stage('Create Container') {
+            steps {
+                script {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
     }
 }
