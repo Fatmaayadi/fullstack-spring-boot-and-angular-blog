@@ -69,7 +69,7 @@ pipeline {
             steps {
                 script {
                     dir('spring-blog-backend') {
-                        sh 'docker build -t backend:latest .'
+                        sh 'docker build -t fatma24/backend:latest .'
                     }
                 }
             }
@@ -79,7 +79,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
                     script {
                         sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
-                        sh "docker push backend:latest"
+                        sh "docker push fatma24/backend:latest"
                     }
                 }
             }
@@ -87,7 +87,7 @@ pipeline {
         stage('Create Container') {
             steps {
                 script {
-                    sh 'docker-compose up -d'
+                    sh 'docker-compose up --force-recreate --build -d'
                 }
             }
         }
