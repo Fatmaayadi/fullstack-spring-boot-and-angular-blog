@@ -44,7 +44,7 @@ pipeline {
             steps {
                 script {
                     dir('spring-blog-client') {
-                        sh 'docker build -t frontend:latest .'
+                        sh 'docker build -t fatma24/frontend:latest .'
                     }
                 }
             }
@@ -54,7 +54,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
                     script {
                         sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
-                        sh "docker push frontend:latest"
+                        sh "docker push fatma24/frontend:latest"
                     }
                 }
             }
