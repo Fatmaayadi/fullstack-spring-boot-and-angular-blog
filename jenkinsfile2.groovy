@@ -66,5 +66,14 @@ pipeline {
                 }
             }
         }
+        stage('Deploy Frontend with Ansible') {
+            steps {
+                withCredentials([sshUserPrivateKey(credentialsId: 'Ansible', keyFileVariable: 'SSH_KEY')]) {
+                    sh """
+                        ansible-playbook -i hosts.ini --private-key $SSH_KEY --ask-become-pass deploy-frontend.yml
+                    """
+                }
+            }
+        }
     }
 }

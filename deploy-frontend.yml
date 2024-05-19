@@ -1,0 +1,13 @@
+---
+- name: Deploy Frontend Kubernetes Resources
+  hosts: master
+  become: yes
+  collections:
+    - community.kubernetes
+
+  tasks:
+    - name: Deploy Frontend
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'spring-blog-client/deployment.yml') }}"
+      become: yes

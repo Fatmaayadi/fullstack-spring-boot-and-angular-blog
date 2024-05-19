@@ -65,29 +65,13 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+
+        stage('Deploy Backend with Ansible') {
             steps {
-                script {
-                    dir('spring-blog-backend') {
-                        sh 'docker build -t fatma24/backend:latest .'
-                    }
-                }
-            }
-        }
-        stage('Push to Docker Hub') {
-            steps {
-                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_HUB_PASSWORD', usernameVariable: 'DOCKER_HUB_USERNAME')]) {
-                    script {
-                        sh "docker login -u ${DOCKER_HUB_USERNAME} -p ${DOCKER_HUB_PASSWORD}"
-                        sh "docker push fatma24/backend:latest"
-                    }
-                }
-            }
-        }
-        stage('Create Container') {
-            steps {
-                script {
-                    sh 'docker-compose up --force-recreate --build -d'
+                withCredentials([sshUserPrivateKey(credentialsId: 'Ansible', keyFileVariable: 'SSH_KEY')]) {
+                    sh """
+                        ansible-playbook -i hosts.ini --private-key $SSH_KEY --ask-become-pass deploy-backend.yml
+                    """
                 }
             }
         }

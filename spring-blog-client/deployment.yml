@@ -2,6 +2,7 @@ apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: angular-app # Deployment name
+  namespace: my-project
 spec:
   replicas: 1
   selector:
@@ -18,7 +19,7 @@ spec:
         imagePullPolicy: "Always"
         env:
         - name: BACKEND_URL
-          value: "http://192.168.74.140:31001"
+          value: "http://192.168.74.140:32000"
         ports:
         - containerPort: 80
 ---
@@ -26,6 +27,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: angular-service
+  namespace: my-project
 spec:
   type: NodePort
   selector:
@@ -34,4 +36,4 @@ spec:
   - protocol: TCP
     port: 80
     targetPort: 80
-    nodePort: 31002
+    nodePort: 31004

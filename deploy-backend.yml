@@ -1,0 +1,13 @@
+---
+- name: Deploy Backend Kubernetes Resources
+  hosts: master
+  become: yes
+  collections:
+    - community.kubernetes
+
+  tasks:
+    - name: Deploy Backend
+      kubernetes.core.k8s:
+        state: present
+        definition: "{{ lookup('file', 'spring-blog-backend/deployment1.yml') }}"
+      become: yes
