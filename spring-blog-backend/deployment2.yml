@@ -36,6 +36,12 @@ spec:
         env:
           - name: MYSQL_ROOT_PASSWORD
             value: ubuntu 
+          - name: MYSQL_DATABASE
+            value: springblog
+          - name: MYSQL_USER
+            value: root
+          - name: MYSQL_PASSWORD
+            value: ubuntu        
         ports:
         - containerPort: 3306
           name: mysql
