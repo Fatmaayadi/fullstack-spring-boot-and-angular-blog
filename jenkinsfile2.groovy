@@ -66,7 +66,7 @@ pipeline {
                 }
             }
         }
-        stage('Deploy Frontend with Ansible') {
+        stage('Deploy Frontend on kubernetes cluster with Ansible') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'Ansible', keyFileVariable: 'SSH_KEY')]) {
                     sh """

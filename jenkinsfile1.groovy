@@ -92,7 +92,7 @@ pipeline {
             }
         }
 
-        stage('Deploy Backend with Ansible') {
+        stage('Deploy Backend on kubernetes cluster with Ansible') {
             steps {
                 withCredentials([sshUserPrivateKey(credentialsId: 'Ansible', keyFileVariable: 'SSH_KEY')]) {
                     sh """
